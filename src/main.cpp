@@ -223,13 +223,17 @@ int main(int, char**)
         {
             ShowMainMenu(show_window);
         }
-        if (show_window[1])
+        else if (show_window[1])
         {
             ShowGameLevel(show_window, textures, our_game);
         }
-        if (show_window[2])
+        else if (show_window[2])
         {
             ShowPauseMenu(show_window, our_game);
+        }
+        else if (show_window[3])
+        {
+            ShowEndMenu(show_window, our_game);
         }
 
         // Rendering

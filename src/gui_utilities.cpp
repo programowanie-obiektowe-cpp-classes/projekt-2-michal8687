@@ -16,8 +16,6 @@ bool Texture::Load(const std::string& path)
     int channels;
     stbi_uc* data = stbi_load(path.c_str(), &m_width, &m_height, &channels, 4);
 
-    //printf("Loading texture: %s | data=%p | w=%d h=%d\n", path.c_str(), data, m_width,m_height);
-
     if (!data)
         return false;
 
@@ -210,14 +208,7 @@ void ShowGameLevel(bool* p_open, Texture* textures, Game& game)
         game.updateGhosts(1 / GetIO().Framerate);
         scena.DisplayCharacter(textures[0], game.getPlayerX(), game.getPlayerY());
         scena.DisplayGhosts(textures, game.getGhosts());
-        if (game.checkVictory())
-        {
-            p_open[0] = false;
-            p_open[1] = false;
-            p_open[2] = false;
-            p_open[3] = true;
-        }
-        if (game.checkPacmanCollision())
+        if (game.checkVictory() || game.checkPacmanCollision())
         {
             p_open[0] = false;
             p_open[1] = false;
@@ -263,6 +254,41 @@ void ShowPauseMenu(bool* p_open, Game& game)
         }
         SetCursorPos(ImVec2(GetWindowWidth() * 0.25, GetWindowHeight() * 0.7));
         if (Button("Exit", ImVec2(GetWindowWidth() * 0.5, GetWindowHeight() * 0.15)))
+        {
+            p_open[0] = true;
+            p_open[1] = false;
+            p_open[2] = false;
+            p_open[3] = false;
+            Game new_game;
+            game = new_game;
+        }
+        ImGui::End();
+    }
+}
+
+void ShowEndMenu(bool* p_open, Game& game)
+{
+    using namespace ImGui;
+    static ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings;
+    const ImGuiViewport* viewport = ImGui::GetMainViewport();
+    SetNextWindowPos(true ? viewport->WorkPos : viewport->Pos);
+    SetNextWindowSize(true ? viewport->WorkSize : viewport->Size);
+
+    if (Begin("End menu", &p_open[3], flags))
+    {
+        if (game.checkVictory())
+        {
+            SetCursorPos(ImVec2(GetWindowWidth() * 0.5 - CalcTextSize("Victory").x / 2, GetWindowHeight() * 0.15));
+            Text("Victory");               // Display some text (you can use a format strings too)
+        }
+        else
+        {
+            SetCursorPos(ImVec2(GetWindowWidth() * 0.5 - CalcTextSize("Defeat").x / 2, GetWindowHeight() * 0.15));
+            Text("Defeat");               // Display some text (you can use a format strings too)
+        }
+        SetCursorPos(ImVec2(GetWindowWidth() * 0.25, GetWindowHeight() * 0.4));
+        SetWindowFontScale(GetWindowHeight() * 0.006);
+        if (Button("Main menu", ImVec2(GetWindowWidth() * 0.5, GetWindowHeight() * 0.15)))
         {
             p_open[0] = true;
             p_open[1] = false;

@@ -56,5 +56,6 @@ private:
 void ShowMainMenu(bool* p_open);
 void ShowGameLevel(bool* p_open, Texture* textures, Game& game);
 void ShowPauseMenu(bool* p_open, Game& game);
+void ShowEndMenu(bool* p_open, Game& game);
 void DisplayTexture(Texture& texture, ImVec2 start_position, ImVec2 dimentions);
 int GetInputDir();
